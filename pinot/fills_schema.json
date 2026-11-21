@@ -1,0 +1,27 @@
+{
+  "schemaName": "fills",
+  "primaryKeyColumns": ["venue", "symbol", "trade_id"],
+  "dimensionFieldSpecs": [
+    { "name": "venue", "dataType": "STRING" },
+    { "name": "market_kind", "dataType": "STRING" },
+    { "name": "symbol", "dataType": "STRING" },
+    { "name": "trade_id", "dataType": "LONG" },
+    { "name": "synthetic_id", "dataType": "BOOLEAN" },
+    { "name": "side", "dataType": "STRING" },
+    { "name": "finality", "dataType": "STRING" },
+    { "name": "venue_ts_us", "dataType": "LONG" },
+    { "name": "recv_ts_us", "dataType": "LONG" },
+    { "name": "ingest_ts_us", "dataType": "LONG" }
+  ],
+  "metricFieldSpecs": [
+    { "name": "price_e8", "dataType": "LONG" },
+    { "name": "qty_e8", "dataType": "LONG" },
+    { "name": "fee_rate_bps", "dataType": "INT", "defaultNullValue": -1 },
+    { "name": "price", "dataType": "DOUBLE" },
+    { "name": "qty", "dataType": "DOUBLE" },
+    { "name": "notional", "dataType": "DOUBLE" }
+  ],
+  "dateTimeFieldSpecs": [
+    { "name": "venue_ts_ms", "dataType": "LONG", "format": "1:MILLISECONDS:EPOCH", "granularity": "1:MILLISECONDS" }
+  ]
+}

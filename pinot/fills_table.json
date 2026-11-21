@@ -1,0 +1,47 @@
+{
+  "tableName": "fills",
+  "tableType": "REALTIME",
+  "segmentsConfig": {
+    "schemaName": "fills",
+    "timeColumnName": "venue_ts_ms",
+    "replicasPerPartition": "1",
+    "retentionTimeUnit": "DAYS",
+    "retentionTimeValue": "30"
+  },
+  "tenants": {},
+  "tableIndexConfig": {
+    "loadMode": "MMAP",
+    "invertedIndexColumns": ["venue", "symbol", "side", "market_kind", "finality"],
+    "rangeIndexColumns": ["venue_ts_ms"],
+    "noDictionaryColumns": ["trade_id", "price_e8", "qty_e8", "venue_ts_us", "recv_ts_us", "ingest_ts_us", "price", "qty", "notional"]
+  },
+  "routing": { "instanceSelectorType": "strictReplicaGroup" },
+  "upsertConfig": {
+    "mode": "FULL",
+    "comparisonColumns": ["ingest_ts_us"]
+  },
+  "ingestionConfig": {
+    "streamIngestionConfig": {
+      "streamConfigMaps": [
+        {
+          "streamType": "kafka",
+          "stream.kafka.topic.name": "fills",
+          "stream.kafka.broker.list": "kafka:29092",
+          "stream.kafka.consumer.type": "lowlevel",
+          "stream.kafka.consumer.factory.class.name": "org.apache.pinot.plugin.stream.kafka20.KafkaConsumerFactory",
+          "stream.kafka.decoder.class.name": "org.apache.pinot.plugin.inputformat.json.JSONMessageDecoder",
+          "stream.kafka.consumer.prop.auto.offset.reset": "smallest",
+          "realtime.segment.flush.threshold.rows": "0",
+          "realtime.segment.flush.threshold.time": "1h",
+          "realtime.segment.flush.threshold.segment.size": "50M"
+        }
+      ]
+    },
+    "transformConfigs": [
+      { "columnName": "price", "transformFunction": "divide(price_e8, 100000000)" },
+      { "columnName": "qty", "transformFunction": "divide(qty_e8, 100000000)" },
+      { "columnName": "notional", "transformFunction": "times(divide(price_e8, 100000000), divide(qty_e8, 100000000))" }
+    ]
+  },
+  "metadata": {}
+}
